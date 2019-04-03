@@ -1,0 +1,41 @@
+{
+    "presets": [
+        ["@babel/preset-env", {
+            "targets": {
+                "browsers": [
+                    "chrome >= 50",
+                    "safari >= 10",
+                    "firefox >= 50",
+                    "ie >= 10"
+                ]
+            },
+            "debug": true,
+            "useBuiltIns": "usage"
+        }],
+        "@babel/preset-react"
+    ],
+    "plugins": [
+        "@babel/plugin-syntax-dynamic-import",
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ],
+        [
+            "@babel/plugin-proposal-class-properties",
+            {
+                "loose": true
+            }
+        ],
+        ["@babel/plugin-transform-runtime", {
+            "helpers": false,
+            "polyfill": true,
+            "corejs": 2,
+            "regenerator": true,
+            "moduleName": "babel-runtime"
+        }],
+        "@babel/plugin-transform-async-to-generator",
+        "react-hot-loader/babel"
+    ]
+}

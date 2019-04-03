@@ -1,0 +1,15 @@
+{
+    "eslint": {
+        "env": {
+            "browser": true,
+            "es6": true
+        },
+        "rules": {
+            "fecs-valid-jsdoc": "off",
+            "fecs-export-on-declare": "off",
+            "fecs-min-vars-per-destructure": "off",
+            "fecs-no-require": "off",
+            "fecs-prefer-class": "off"
+        }
+    }
+}
