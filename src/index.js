@@ -45,7 +45,7 @@ class Main {
             controls.dynamicDampingFactor = 0.3;
             controls.keys = [65, 83, 68];
             controls.addEventListener('change', () => {
-                this.render(scene,camera);
+                this.render();
             });
         }
 
@@ -85,12 +85,17 @@ class Main {
             scene.add(hemisphereLight);
         }
 
+        this.render = () => {
+            renderer.render(scene,camera);
+        }
+
         this.init();
     }
 
     animate(){
-        window.requestAnimationFrame(this.animate.bind(this))
-        renderer.render(scene,camera);
+        window.requestAnimationFrame(this.animate.bind(this));
+        controls && controls.update();
+        this.render();
     }
 }
 
