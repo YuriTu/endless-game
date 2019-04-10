@@ -1,21 +1,23 @@
 import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
+import {hero, ground, common} from './config';
+let SCREEN_WIDTH = window.innerWidth;
+let SCREEN_HEIGHT = window.innerHeight;
 
-let SCREEN_WIDTH = window.innerWidth,
-    SCREEN_HEIGHT = window.innerHeight;
+let renderer;
+let camera;
+let scene;
+let controls;
 
-let renderer,camera, scene, controls;
-
-import {hero, ground, common } from "./config";
 
 class Main {
-    constructor(){
+    constructor() {
 
         this.init = () => {
             this.initScene();
             this.initDevTool();
             this.initObject();
-        }
+        };
 
         this.initScene = () => {
             scene = new THREE.Scene();
@@ -23,14 +25,14 @@ class Main {
             camera = new THREE.PerspectiveCamera(45, SCREEN_WIDTH / SCREEN_HEIGHT, .1, 1000);
             camera.position.z = common.camz;
             camera.position.y = common.camy;
-            renderer = new THREE.WebGLRenderer({alpha:true});
+            renderer = new THREE.WebGLRenderer({alpha: true});
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.setClearColor(common.bg, 1);
             document.body.appendChild(renderer.domElement);
 
             window.scene = scene;
-        }
+        };
 
         this.initDevTool = () => {
             // axes
@@ -47,52 +49,52 @@ class Main {
             controls.addEventListener('change', () => {
                 this.render();
             });
-        }
+        };
 
         this.initObject = () => {
             this.initHero();
             this.initGroundSphere();
             this.initLight();
 
-        }
+        };
 
         this.initHero = () => {
-            let geo = new THREE.DodecahedronGeometry( hero.radius, 1);
-            let mat = new THREE.MeshStandardMaterial( { color: 0xe5f2f2 ,shading:THREE.FlatShading} )
-            this.hero = new THREE.Mesh(geo,mat);
+            let geo = new THREE.DodecahedronGeometry(hero.radius, 1);
+            let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, shading: THREE.FlatShading});
+            this.hero = new THREE.Mesh(geo, mat);
             scene.add(this.hero);
-        }
+        };
 
         this.initGroundSphere = () => {
-            let sphereGeometry = new THREE.SphereGeometry( ground.radius, ground.widSeg,ground.heiSeg);
-            let sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xfffafa ,shading:THREE.FlatShading} )
-            this.rollingGroundSphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-            this.rollingGroundSphere.position.set(0,ground.posy,ground.posz);
+            let sphereGeometry = new THREE.SphereGeometry(ground.radius, ground.widSeg, ground.heiSeg);
+            let sphereMaterial = new THREE.MeshStandardMaterial({color: 0xfffafa, shading: THREE.FlatShading});
+            this.rollingGroundSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            this.rollingGroundSphere.position.set(0, ground.posy, ground.posz);
             scene.add(this.rollingGroundSphere);
-        }
+        };
 
         this.initLight = () => {
-            const sun = new THREE.DirectionalLight(0xfffafa,0.5);
-            sun.position.set(0,4,1);
+            const sun = new THREE.DirectionalLight(0xfffafa, 0.5);
+            sun.position.set(0, 4, 1);
             sun.castShadow = true;
             scene.add(sun);
             sun.shadow.mapSize.width = 256;
             sun.shadow.mapSize.height = 256;
             sun.shadow.camera.near = 0.5;
-            sun.shadow.camera.far = 50 ;
+            sun.shadow.camera.far = 50;
 
-            const hemisphereLight = new THREE.HemisphereLight(0xfffafa,0x000000, .9)
+            const hemisphereLight = new THREE.HemisphereLight(0xfffafa, 0x000000, .9);
             scene.add(hemisphereLight);
-        }
+        };
 
         this.render = () => {
-            renderer.render(scene,camera);
-        }
+            renderer.render(scene, camera);
+        };
 
         this.init();
     }
 
-    animate(){
+    animate() {
         window.requestAnimationFrame(this.animate.bind(this));
         controls && controls.update();
         this.render();
