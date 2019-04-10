@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
-import {hero, ground, common} from './config';
+import {common} from './config';
+import {Animator} from './animator';
+
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
 
@@ -9,14 +11,14 @@ let camera;
 let scene;
 let controls;
 
-
 class Main {
     constructor() {
-
         this.init = () => {
             this.initScene();
             this.initDevTool();
-            this.initObject();
+            this.actor = new Animator({
+                scene
+            });
         };
 
         this.initScene = () => {
@@ -26,6 +28,8 @@ class Main {
             camera.position.z = common.camz;
             camera.position.y = common.camy;
             renderer = new THREE.WebGLRenderer({alpha: true});
+            renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            renderer.setPixelRatio(window.devicePixelRatio);
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.setClearColor(common.bg, 1);
@@ -51,43 +55,8 @@ class Main {
             });
         };
 
-        this.initObject = () => {
-            this.initHero();
-            this.initGroundSphere();
-            this.initLight();
-
-        };
-
-        this.initHero = () => {
-            let geo = new THREE.DodecahedronGeometry(hero.radius, 1);
-            let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, shading: THREE.FlatShading});
-            this.hero = new THREE.Mesh(geo, mat);
-            scene.add(this.hero);
-        };
-
-        this.initGroundSphere = () => {
-            let sphereGeometry = new THREE.SphereGeometry(ground.radius, ground.widSeg, ground.heiSeg);
-            let sphereMaterial = new THREE.MeshStandardMaterial({color: 0xfffafa, shading: THREE.FlatShading});
-            this.rollingGroundSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-            this.rollingGroundSphere.position.set(0, ground.posy, ground.posz);
-            scene.add(this.rollingGroundSphere);
-        };
-
-        this.initLight = () => {
-            const sun = new THREE.DirectionalLight(0xfffafa, 0.5);
-            sun.position.set(0, 4, 1);
-            sun.castShadow = true;
-            scene.add(sun);
-            sun.shadow.mapSize.width = 256;
-            sun.shadow.mapSize.height = 256;
-            sun.shadow.camera.near = 0.5;
-            sun.shadow.camera.far = 50;
-
-            const hemisphereLight = new THREE.HemisphereLight(0xfffafa, 0x000000, .9);
-            scene.add(hemisphereLight);
-        };
-
         this.render = () => {
+            this.actor.update();
             renderer.render(scene, camera);
         };
 
@@ -99,6 +68,7 @@ class Main {
         controls && controls.update();
         this.render();
     }
+
 }
 
 let main = new Main();
