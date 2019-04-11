@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {hero, ground} from './config';
+import _ from 'christina';
 
 export class Animator {
     constructor(props) {
@@ -23,7 +24,7 @@ export class Animator {
         };
 
         this.initGroundSphere = () => {
-            let sphereGeometry = new THREE.SphereGeometry(ground.radius, ground.widSeg, ground.heiSeg);
+            let sphereGeometry = this.genSphere();
             let sphereMaterial = new THREE.MeshStandardMaterial({color: 0xfffafa, shading: THREE.FlatShading});
             this.rolGround = new THREE.Mesh(sphereGeometry, sphereMaterial);
             this.rolGround.position.set(0, ground.posy, ground.posz);
@@ -33,6 +34,36 @@ export class Animator {
             };
 
             this.scene.add(this.rolGround);
+        };
+
+        this.genSphere = () => {
+            let geo = new THREE.SphereGeometry(ground.radius, ground.widSeg, ground.heiSeg);
+            let firstVertex = null;
+
+            // 经度
+            for (let i = 0; i < ground.widSeg; i ++) {
+                // 维度忽视两级
+                for (let j = 1; j < ground.heiSeg - 2; j++) {
+                    let currentRowIndex = (j * ground.widSeg) + 1;
+                    let currentVertex = geo.vertices[i + currentRowIndex].clone();
+
+                    if (j % 2 === 0) {
+                        firstVertex = i === 0 ? currentVertex : null;
+                        let nextVertex = (i === ground.widSeg - 1) ? firstVertex
+                            : geo.vertices[i + currentRowIndex + 1].clone();
+                        let lerpValue = _.random(25, 75);
+                        currentVertex.lerp(nextVertex, lerpValue);
+                    }
+
+                    // 单数维度基础偏转
+                    let heightValue = _.random(-ground.slopeHeight, ground.slopeHeight);
+                    // 计算单位向量
+                    let offset = geo.vertices[i + currentRowIndex].clone().normalize().multiplyScalar(heightValue);
+                    // 加和
+                    geo.vertices[i + currentRowIndex] = currentVertex.add(offset);
+                }
+            }
+            return geo;
         };
 
         this.initLight = () => {
