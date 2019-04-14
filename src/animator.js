@@ -41,17 +41,17 @@ export class Animator {
             let firstVertex = null;
 
             // 经度
-            for (let i = 0; i < ground.widSeg; i ++) {
+            for (let i = 0; i < ground.widSeg; i++) {
                 // 维度忽视两级
                 for (let j = 1; j < ground.heiSeg - 2; j++) {
                     let currentRowIndex = (j * ground.widSeg) + 1;
                     let currentVertex = geo.vertices[i + currentRowIndex].clone();
 
                     if (j % 2 === 0) {
-                        firstVertex = i === 0 ? currentVertex : null;
+                        (i === 0) && (firstVertex = currentVertex);
                         let nextVertex = (i === ground.widSeg - 1) ? firstVertex
                             : geo.vertices[i + currentRowIndex + 1].clone();
-                        let lerpValue = _.random(25, 75);
+                        let lerpValue = _.random(ground.lerpStart,ground.lerpEnd);
                         currentVertex.lerp(nextVertex, lerpValue);
                     }
 
@@ -81,7 +81,7 @@ export class Animator {
         };
 
         this.initBlock = () => {
-
+            
         };
 
         this.init();

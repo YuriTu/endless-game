@@ -14,11 +14,14 @@ const hero = {
 
 const ground = {
     radius: 130,
-    widSeg: 32,
-    heiSeg: 32,
+    widSeg: 40,
+    heiSeg: 40,
     posy: -130 + (-hero.radius),
     posz: 0,
-    rotXSpeed: .01
+    rotXSpeed: .01,
+    slopeHeight: 1,
+    lerpStart: 0.25,
+    lerpEnd: 0.75
 };
 
 export {
