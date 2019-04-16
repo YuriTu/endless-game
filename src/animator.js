@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {hero, ground} from './config';
+import {hero, ground, block} from './config';
 import _ from 'christina';
 
 export class Animator {
@@ -81,6 +81,8 @@ export class Animator {
         };
 
         this.initBlock = () => {
+            let treeGeo = new THREE.ConeGeometry(block.radius, block.height, block.heiSeg, block.radSeg);
+            let treeMat = new THREE.MeshStandardMaterial({color: block.color, shading: THREE.FlatShading});
             
         };
 
