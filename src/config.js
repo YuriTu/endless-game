@@ -24,8 +24,41 @@ const ground = {
     lerpEnd: 0.75
 };
 
+const block = {
+    radius: 10,
+    height: 10,
+    heightSeg: 6,
+    radSeg: 8,
+    color: '#33ff33',
+    posy:12,
+    scalarStart: 5,
+    scalarEnd: 20,
+    trunkRad: 5,
+    trunkHeight: 25,
+    trunkPosY:5,
+    trunkColor: '#886633',
+};
+
+const particle = {
+    count:20,
+    color: '#fffafa',
+    size: 0.2,
+    scale:1.06,
+    scaleMaxLimit: 1.005,
+    scaleStep:.001,
+    start:{
+        y:20,
+        z:48,
+    },
+    vectorLimit:2,
+    scaleEnd:1.07
+
+}
+
 export {
     common,
     hero,
-    ground
+    ground,
+    block,
+    particle
 };
