@@ -9,7 +9,12 @@ const common = {
 const hero = {
     radius: 10,
     detail: 1,
-    rotXSpeed: -.1
+    rotXSpeed: -.1,
+    limitY:18,
+    jumpY:1,
+    jumpMin:.04,
+    jumpMax:.005
+
 };
 
 const ground = {

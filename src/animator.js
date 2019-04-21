@@ -16,9 +16,15 @@ export class Animator {
             let geo = new THREE.DodecahedronGeometry(hero.radius, hero.detail);
             let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, shading: THREE.FlatShading});
             this.hero = new THREE.Mesh(geo, mat);
+            this.hero.jumpValue = hero.jumpY;
 
             this.hero.update = () => {
                 this.hero.rotation.x += hero.rotXSpeed;
+                if (this.hero.position.y <= hero.limitY) {
+                    this.hero.isJumping = false;
+                    this.hero.jumpValue = _.random(hero.jumpMin,hero.jumpMax);
+                }
+                this.hero.position.y += this.hero.jumpValue;
             };
 
             this.scene.add(this.hero);
@@ -193,4 +199,9 @@ export class Animator {
         // this.rolGround.update();
         this.particles && this.particles.update();
     }
+}
+
+
+class Timer {
+    
 }
