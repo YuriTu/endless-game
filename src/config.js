@@ -3,7 +3,8 @@ const common = {
     bg: 0xfffafa,
     fog: 0xf0fff0,
     camz: 100,
-    camy: 10
+    camy: 10,
+
 };
 
 const hero = {
@@ -13,7 +14,8 @@ const hero = {
     limitY:18,
     jumpY:1,
     jumpMin:.04,
-    jumpMax:.005
+    jumpMax:.005,
+    gravity: .005
 
 };
 

@@ -5,16 +5,18 @@ import _ from 'christina';
 export class Animator {
     constructor(props) {
         this.scene = props.scene;
+        this.currentLane = 0;
+        this.timer = new Timer();
         this.init = () => {
-            // this.initHero();
-            // this.initGroundSphere();
+            this.initHero();
+            this.initGroundSphere();
             this.initLight();
-            // this.initBlock();
+            this.initBlock();
             this.initExplosion();
         };
         this.initHero = () => {
             let geo = new THREE.DodecahedronGeometry(hero.radius, hero.detail);
-            let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, shading: THREE.FlatShading});
+            let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, flatShading: THREE.FlatShading});
             this.hero = new THREE.Mesh(geo, mat);
             this.hero.jumpValue = hero.jumpY;
 
@@ -25,6 +27,8 @@ export class Animator {
                     this.hero.jumpValue = _.random(hero.jumpMin,hero.jumpMax);
                 }
                 this.hero.position.y += this.hero.jumpValue;
+                // this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.currentLane,this.timer.getDelta());
+                this.hero.jumpValue -= hero.gravity;
             };
 
             this.scene.add(this.hero);
@@ -32,7 +36,7 @@ export class Animator {
 
         this.initGroundSphere = () => {
             let sphereGeometry = this.genSphere();
-            let sphereMaterial = new THREE.MeshStandardMaterial({color: 0xfffafa, shading: THREE.FlatShading});
+            let sphereMaterial = new THREE.MeshStandardMaterial({color: 0xfffafa, flatShading: THREE.FlatShading});
             this.rolGround = new THREE.Mesh(sphereGeometry, sphereMaterial);
             this.rolGround.position.set(0, ground.posy, ground.posz);
 
@@ -89,7 +93,7 @@ export class Animator {
 
         this.initBlock = () => {
             let treeGeo = new THREE.ConeGeometry(block.radius, block.height, block.radSeg, block.heightSeg);
-            let treeMat = new THREE.MeshStandardMaterial({color: block.color, shading: THREE.FlatShading});
+            let treeMat = new THREE.MeshStandardMaterial({color: block.color, flatShading: THREE.FlatShading});
             let scalarMultiplier = _.random(block.scalarStart, block.scalarEnd);
 
             this.makeTreeUp(treeGeo.vertices, block.heiSeg, 0, scalarMultiplier);
@@ -108,19 +112,22 @@ export class Animator {
             treeTop.rotation.y = (Math.random() * Math.PI);
 
             let trunkGeo = new THREE.CylinderGeometry(block.trunkRad, block.trunkRad, block.height);
-            let trunkMat = new THREE.MeshStandardMaterial({color: block.trunkColor, shading: THREE.FlatShading});
+            let trunkMat = new THREE.MeshStandardMaterial({color: block.trunkColor, flatShading: THREE.FlatShading});
             let trunk = new THREE.Mesh(trunkGeo, trunkMat);
             trunk.position.y = block.trunkPosY;
             let tree = new THREE.Group();
             tree.add(treeTop);
             tree.add(trunk);
 
-
             this.scene.add(tree);
 
             return tree;
-
         };
+
+        this.blockUpdate = () => {
+
+        }
+
         // 扩大树轮范围 对高度进行差异化
         this.makeTreeUp = (vertices, heightSegment, currentRadiustSeg, scalarMultiplier, isOdd = false) => {
             const topPointVector = vertices[0].clone();
@@ -156,7 +163,7 @@ export class Animator {
         // todo 逻辑太多 抽个class
         this.initExplosion = () => {
             let particleGeo = new THREE.Geometry();
-            let particleMat = new THREE.ParticleBasicMaterial({
+            let particleMat = new THREE.PointsMaterial({
                 color: particle.color,
                 size: particle.size
             });
@@ -196,12 +203,21 @@ export class Animator {
 
     update() {
         this.hero && this.hero.update();
-        // this.rolGround.update();
+        this.timer.update();
+        this.particles.update();
+        this.rolGround && this.rolGround.update();
+        // tree.update()
         this.particles && this.particles.update();
+
     }
 }
 
 
 class Timer {
-    
+    constructor(){
+
+    }
+    update(){
+
+    }
 }
