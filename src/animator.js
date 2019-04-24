@@ -6,7 +6,8 @@ export class Animator {
     constructor(props) {
         this.scene = props.scene;
         this.currentLane = 0;
-        this.timer = new Timer();
+        this.timer = new THREE.Clock();
+        this.scorer = new Scorer();
         this.init = () => {
             this.initHero();
             this.initGroundSphere();
@@ -126,6 +127,12 @@ export class Animator {
 
         this.blockUpdate = () => {
             // todo tree path tree pool
+            if (this.timer.getElapsedTime() > .5 ){
+                this.timer.start();
+                //block judge
+                // score.update();
+                //this.scorer.update();
+            }
         }
 
         // 扩大树轮范围 对高度进行差异化
@@ -206,6 +213,7 @@ export class Animator {
         this.timer.update();
         this.particles.update();
         this.rolGround && this.rolGround.update();
+        this.blockUpdate();
         // tree.update()
         this.particles && this.particles.update();
 
@@ -213,7 +221,7 @@ export class Animator {
 }
 
 
-class Timer {
+class Scorer {
     constructor(){
 
     }
