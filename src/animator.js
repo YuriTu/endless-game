@@ -127,11 +127,12 @@ export class Animator {
 
         this.blockUpdate = () => {
             // todo tree path tree pool
-            if (this.timer.getElapsedTime() > .5 ){
+            if (this.timer.getElapsedTime() > block.interval ){
                 this.timer.start();
                 //block judge
                 // score.update();
                 //this.scorer.update();
+                this.hasCollided = false;
             }
         }
 
@@ -210,7 +211,6 @@ export class Animator {
 
     update() {
         this.hero && this.hero.update();
-        this.timer.update();
         this.particles.update();
         this.rolGround && this.rolGround.update();
         this.blockUpdate();
