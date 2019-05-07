@@ -47,7 +47,7 @@ const block = {
     interval:.5,
 
     scene: {
-        treeCount:36,
+        treeCount:5,
         gap: 6.28 / 36,
         pathAngleValues:[1.52,1.57,1.62]
     },

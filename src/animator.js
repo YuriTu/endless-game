@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {hero, ground, block, particle} from './config';
+import {Tree} from "./component/Tree";
 import _ from 'christina';
 
 export class Animator {
@@ -33,6 +34,7 @@ export class Animator {
                 this.hero.jumpValue -= hero.gravity;
             };
 
+            this.hero.name = 'hero';
             this.scene.add(this.hero);
         };
 
@@ -45,6 +47,8 @@ export class Animator {
             this.rolGround.update = () => {
                 this.rolGround.rotation.x += ground.rotXSpeed;
             };
+
+            this.rolGround.name = 'ground';
 
             this.scene.add(this.rolGround);
         };
@@ -94,36 +98,7 @@ export class Animator {
         };
 
         this.initBlock = () => {
-            let treeGeo = new THREE.ConeGeometry(block.radius, block.height, block.radSeg, block.heightSeg);
-            let treeMat = new THREE.MeshStandardMaterial({color: block.color, flatShading: THREE.FlatShading});
-            let scalarMultiplier = _.random(block.scalarStart, block.scalarEnd);
-
-            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 0, scalarMultiplier);
-            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 1);
-            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 2, scalarMultiplier * 1.1, true);
-            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 3);
-            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 4, scalarMultiplier * 1.2);
-            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 5);
-            // for mate
-
-            // gen top
-            let treeTop = new THREE.Mesh(treeGeo, treeMat);
-            treeTop.castShadow = true;
-            // treeTop.receiveShadow = false;
-            treeTop.position.y = block.posy;
-            treeTop.rotation.y = (Math.random() * Math.PI);
-
-            let trunkGeo = new THREE.CylinderGeometry(block.trunkRad, block.trunkRad, block.height);
-            let trunkMat = new THREE.MeshStandardMaterial({color: block.trunkColor, flatShading: THREE.FlatShading});
-            let trunk = new THREE.Mesh(trunkGeo, trunkMat);
-            trunk.position.y = block.trunkPosY;
-            let tree = new THREE.Group();
-            tree.add(treeTop);
-            tree.add(trunk);
-
-            this.scene.add(tree);
-
-            return tree;
+            this.block = new Tree(this.scene);
         };
         // move to timer
         this.timerUpdate = () => {
@@ -138,45 +113,8 @@ export class Animator {
             }
         }
 
-        //
-        this.blockUpdate = () => {
-            let pos = new THREE.Vector3();
-            let tree;
-            this.treeInPath.forEach((item, index) => {
 
-            })
-        }
 
-        // 扩大树轮范围 对高度进行差异化
-        this.makeTreeUp = (vertices, heightSegment, currentRadiustSeg, scalarMultiplier, isOdd = false) => {
-            const topPointVector = vertices[0].clone();
-            for (let i = 0; i < heightSegment; i++) {
-                let vertexIndex = (currentRadiustSeg * heightSegment) + 1;
-                let vertex = vertices[vertexIndex + i].clone();
-                let offset = vertex.sub(topPointVector);
-
-                if ( isOdd === (!!(i % 2))) {
-                    offset.normalize().multiplyScalar(scalarMultiplier);
-                    vertices[i + vertexIndex].add(offset);
-                    vertices[i + vertexIndex].y = vertices[i + vertexIndex + heightSegment].y + 0.5;
-                } else {
-                    offset.normalize().multiplyScalar(scalarMultiplier / 6);
-                    vertices[i + vertexIndex].add(offset);
-                }
-            }
-        };
-
-        this.makeTreeTighten = (vertices, heightSegment, currentRadiusSeg) => {
-            let topPointVector = vertices[0].clone();
-            for (let i=0;i<heightSegment;i++){
-                let vertexIndex = currentRadiusSeg * heightSegment + 1;
-                let vertexVector = vertices[i + vertexIndex].clone();
-                topPointVector.y = vertexVector.y;
-                let offset = vertexVector.sub(topPointVector);
-                offset.normalize().multiplyScalar(6);
-                vertices[i + vertexIndex].sub(offset);
-            }
-        }
 
         //todo 这里的爆炸直接消失 加个过渡
         // todo 逻辑太多 抽个class
@@ -224,7 +162,7 @@ export class Animator {
         this.hero && this.hero.update();
         this.particles.update();
         this.rolGround && this.rolGround.update();
-        this.blockUpdate();
+        this.block.update();
         // tree.update()
         this.particles && this.particles.update();
 
