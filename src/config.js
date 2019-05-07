@@ -44,7 +44,14 @@ const block = {
     trunkHeight: 25,
     trunkPosY:5,
     trunkColor: '#886633',
-    interval:.5
+    interval:.5,
+
+    scene: {
+        treeCount:36,
+        gap: 6.28 / 36
+    }
+
+
 };
 
 const particle = {

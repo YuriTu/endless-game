@@ -8,6 +8,7 @@ export class Animator {
         this.currentLane = 0;
         this.timer = new THREE.Clock();
         this.scorer = new Scorer();
+        this.treeInPath = [];
         this.init = () => {
             this.initHero();
             this.initGroundSphere();
@@ -124,16 +125,26 @@ export class Animator {
 
             return tree;
         };
-
-        this.blockUpdate = () => {
+        // move to timer
+        this.timerUpdate = () => {
             // todo tree path tree pool
             if (this.timer.getElapsedTime() > block.interval ){
                 this.timer.start();
                 //block judge
                 // score.update();
                 //this.scorer.update();
+
                 this.hasCollided = false;
             }
+        }
+
+        //
+        this.blockUpdate = () => {
+            let pos = new THREE.Vector3();
+            let tree;
+            this.treeInPath.forEach((item, index) => {
+
+            })
         }
 
         // 扩大树轮范围 对高度进行差异化
