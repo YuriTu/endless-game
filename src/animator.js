@@ -9,7 +9,6 @@ export class Animator {
         this.currentLane = 0;
         this.timer = new THREE.Clock();
         this.scorer = new Scorer();
-        this.treeInPath = [];
         this.init = () => {
             this.initHero();
             this.initGroundSphere();
@@ -43,6 +42,7 @@ export class Animator {
             let sphereMaterial = new THREE.MeshStandardMaterial({color: 0xfffafa, flatShading: THREE.FlatShading});
             this.rolGround = new THREE.Mesh(sphereGeometry, sphereMaterial);
             this.rolGround.position.set(0, ground.posy, ground.posz);
+            this.rolGround.rotation.z = -Math.PI / 2;
 
             this.rolGround.update = () => {
                 this.rolGround.rotation.x += ground.rotXSpeed;
@@ -56,18 +56,21 @@ export class Animator {
         this.genSphere = () => {
             let geo = new THREE.SphereGeometry(ground.radius, ground.widSeg, ground.heiSeg);
             let firstVertex = null;
-            // 这里理论上按照three.js的源码先遍历 heiseg会好理解一些
+            // 这里理论上按照three.js的源码先遍历 heiseg会好理解一些 先从widseg遍历会让firstvext造成覆盖 且不好取
             // 经度
-            for (let i = 0; i < ground.widSeg; i++) {
+            for (let j = 1; j < ground.heiSeg - 2; j++) {
+                for (let i = 0; i < ground.widSeg; i++) {
                 // 维度忽视两级
-                for (let j = 1; j < ground.heiSeg - 2; j++) {
                     let currentRowIndex = (j * ground.widSeg) + 1;
                     let currentVertex = geo.vertices[i + currentRowIndex].clone();
 
-                    if (j % 2 === 0) {
-                        (i === 0) && (firstVertex = currentVertex);
+                    if (j % 2 !== 0){
+                        if (i === 0){
+                            firstVertex = currentVertex.clone();
+                        }
                         let nextVertex = (i === ground.widSeg - 1) ? firstVertex
                             : geo.vertices[i + currentRowIndex + 1].clone();
+                        // let nextVertex = geo.vertices[i + currentRowIndex + 1].clone();
                         let lerpValue = _.random(ground.lerpStart, ground.lerpEnd);
                         currentVertex.lerp(nextVertex, lerpValue);
                     }
