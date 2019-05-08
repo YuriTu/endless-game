@@ -9,17 +9,19 @@ const common = {
 
 const hero = {
     basePosZ:4.8,
-    basePosY:1.8 * 3,
+    basePosY:1.8 * 2,
     radius: 10,
     detail: 1,
     rotXSpeed: -.1,
     limitY:18,
-    jumpY:1,
-    jumpMin:.04 * 10,
-    jumpMax:.005 * 10,
+    jumpBaseY:1,
+    jumpMin:.04 * 5,
+    jumpMax:.005 * 5,
     jumpStep: .1,
-    validMoveJumpStep: .6,
-    gravity: .005
+    validMoveJumpStep: .6 ,
+    gravity: .005 * 2,
+    moveLeftLane: -1,
+    moveRightLane: 1
 
 };
 

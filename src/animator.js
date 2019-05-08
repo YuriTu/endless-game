@@ -6,7 +6,6 @@ import _ from 'christina';
 export class Animator {
     constructor(props) {
         this.scene = props.scene;
-        this.currentLane = 0;
         this.timer = new THREE.Clock();
         this.scorer = new Scorer();
         this.init = () => {
@@ -21,13 +20,21 @@ export class Animator {
             let geo = new THREE.DodecahedronGeometry(hero.radius, hero.detail);
             let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, flatShading: THREE.FlatShading});
             this.hero = new THREE.Mesh(geo, mat);
-            this.hero.jumpValue = hero.jumpY;
+
+            this.hero.jumpValue = hero.jumpBaseY;
             this.hero.jumping = false;
 
             this.hero.receiveShadow = true;
             this.hero.castShadow = true;
-            this.hero.position.z = hero.basePosZ;
+
+            this.hero.middleLane = 0;
+            this.hero.currentLane = this.hero.middleLane;
+            this.hero.leftLane = -1;
+            this.hero.rightLane = 1;
+
+            this.hero.position.x = this.hero.currentLane;
             this.hero.position.y = hero.basePosY;
+            this.hero.position.z = hero.basePosZ;
 
             this.hero.update = () => {
                 this.hero.rotation.x += hero.rotXSpeed;
@@ -36,10 +43,11 @@ export class Animator {
                     this.hero.jumpValue = _.random(hero.jumpMin,hero.jumpMax);
                 }
                 this.hero.position.y += this.hero.jumpValue;
-                this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.currentLane,this.timer.getDelta());
+                console.log(this.hero.position.x, this.hero.currentLane,2 * this.timer.getDelta())
+
+                this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.hero.currentLane * 20,2 * this.timer.getDelta());
                 this.hero.jumpValue -= hero.gravity;
             };
-
 
             this.hero.name = 'hero';
             this.scene.add(this.hero);
@@ -179,9 +187,21 @@ export class Animator {
                 switch (code) {
                     // left
                     case 37:
+                        console.log('left',this.hero.currentLane);
+                        if (this.hero.currentLane === this.hero.leftLane){
+                            validMove = false;
+                        } else {
+                            this.hero.currentLane += hero.moveLeftLane;
+                        }
                         break;
                     // right
                     case 39:
+                        console.log('right');
+                        if (this.hero.currentLane === this.hero.rightLane){
+                            validMove = false;
+                        } else {
+                            this.hero.currentLane += hero.moveRightLane;
+                        }
                         break;
                     // up
                     case 38:
