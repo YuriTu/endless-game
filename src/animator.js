@@ -15,23 +15,31 @@ export class Animator {
             this.initLight();
             this.initBlock();
             this.initExplosion();
+            this.handleEvent();
         };
         this.initHero = () => {
             let geo = new THREE.DodecahedronGeometry(hero.radius, hero.detail);
             let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, flatShading: THREE.FlatShading});
             this.hero = new THREE.Mesh(geo, mat);
             this.hero.jumpValue = hero.jumpY;
+            this.hero.jumping = false;
+
+            this.hero.receiveShadow = true;
+            this.hero.castShadow = true;
+            this.hero.position.z = hero.basePosZ;
+            this.hero.position.y = hero.basePosY;
 
             this.hero.update = () => {
                 this.hero.rotation.x += hero.rotXSpeed;
-                if (this.hero.position.y <= hero.limitY) {
-                    this.hero.isJumping = false;
+                if (this.hero.position.y <= hero.basePosY) {
+                    this.hero.jumping = false;
                     this.hero.jumpValue = _.random(hero.jumpMin,hero.jumpMax);
                 }
                 this.hero.position.y += this.hero.jumpValue;
-                // this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.currentLane,this.timer.getDelta());
+                this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.currentLane,this.timer.getDelta());
                 this.hero.jumpValue -= hero.gravity;
             };
+
 
             this.hero.name = 'hero';
             this.scene.add(this.hero);
@@ -154,6 +162,49 @@ export class Animator {
             }
 
             this.scene.add(this.particles);
+        }
+
+        this.handleEvent = () => {
+            this.handleKeyDown();
+            this.handleResize();
+        }
+
+        this.handleKeyDown = () => {
+            document.addEventListener('keydown',(e) => {
+
+                if (this.hero.jumping) return;
+
+                let validMove = true;
+                const code = e.keyCode;
+                switch (code) {
+                    // left
+                    case 37:
+                        break;
+                    // right
+                    case 39:
+                        break;
+                    // up
+                    case 38:
+                        console.log('up');
+                        this.hero.jumpValue = hero.jumpStep;
+                        this.hero.jumping = true;
+                        validMove = false;
+                        break;
+                    default:
+                        validMove = false;
+                        break;
+                }
+
+                if (validMove) {
+                    this.hero.jumping = true;
+                    this.hero.jumpValue = hero.validMoveJumpStep;
+                }
+            })
+
+        }
+
+        this.handleResize = () => {
+
         }
 
 

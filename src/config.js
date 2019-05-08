@@ -8,13 +8,17 @@ const common = {
 };
 
 const hero = {
+    basePosZ:4.8,
+    basePosY:1.8 * 3,
     radius: 10,
     detail: 1,
     rotXSpeed: -.1,
     limitY:18,
     jumpY:1,
-    jumpMin:.04,
-    jumpMax:.005,
+    jumpMin:.04 * 10,
+    jumpMax:.005 * 10,
+    jumpStep: .1,
+    validMoveJumpStep: .6,
     gravity: .005
 
 };
@@ -23,7 +27,7 @@ const ground = {
     radius: 130,
     widSeg: 40,
     heiSeg: 40,
-    posy: -130 + (-hero.radius),
+    posy: -130 + (-hero.radius) + 5,
     posz: 0,
     rotXSpeed: .01,
     slopeHeight: 1,

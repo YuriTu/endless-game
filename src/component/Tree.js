@@ -64,12 +64,12 @@ export class Tree {
             let treeMat = new THREE.MeshStandardMaterial({color: block.color, flatShading: THREE.FlatShading});
             let scalarMultiplier = _.random(block.scalarStart, block.scalarEnd);
 
-            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 0, scalarMultiplier);
-            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 1);
-            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 2, scalarMultiplier * 1.1, true);
-            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 3);
-            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 4, scalarMultiplier * 1.2);
-            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 5);
+            // this.makeTreeUp(treeGeo.vertices, block.heiSeg, 0, scalarMultiplier);
+            // this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 1);
+            // this.makeTreeUp(treeGeo.vertices, block.heiSeg, 2, scalarMultiplier * 1.1, true);
+            // this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 3);
+            // this.makeTreeUp(treeGeo.vertices, block.heiSeg, 4, scalarMultiplier * 1.2);
+            // this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 5);
             // for mate
 
             // gen top
