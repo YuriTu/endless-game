@@ -9,11 +9,12 @@ export class Tree {
         this.treesPool = [];
         this.treesInPathPool = [];
         this.ground = scene.getObjectByName('ground')
-        // 初始化常驻数目
+        // 初始化常驻
         this.init = () => {
+
             for (let i = 0; i < block.scene.treeCount; i++){
-                this.setTreesPool(false, i* block.scene.gap, true);
-                this.setTreesPool(false, i* block.scene.gap, false);
+                this.setTrees(false, i* block.scene.gap, true);
+                this.setTrees(false, i* block.scene.gap, false);
             }
         }
 
@@ -21,7 +22,7 @@ export class Tree {
 
         }
 
-        this.setTreesPool = (isInPath, row, isLeft = false) => {
+        this.setTrees = (isInPath, row, isLeft = false) => {
             let newTree = null;
             if (isInPath) {
                 if (this.treesPool.length === 0) return;
@@ -34,25 +35,28 @@ export class Tree {
                 // todo theta 当前sphere的旋转角度
                 sphericalHelper.set(ground.radius - 3, block.scene.pathAngleValues[row],this.ground.rotation.x );
             } else {
-                console.log('add trree world')
                 newTree = this.generateTree();
-                let angel = 1.68 - Math.random() * 0.1
+                // angle 天顶角固定   row 方位角 圆形36分
+                let angel = 0;
+                if (isLeft){
+                    angel = 1.68+Math.random()*0.1;
+                }else{
+                    angel = 1.46-Math.random()*0.1;
+                }
+
                 sphericalHelper.set(ground.radius - 3, angel,row);
             }
 
             newTree.position.setFromSpherical(sphericalHelper);
-            // 把树立起来
-            // let rollingGroundVector = this.ground.position.clone().normalize();
-            // let treeVector = newTree.position.clone().normalize();
-            // newTree.quaternion.setFromUnitVectors(treeVector, rollingGroundVector);
-            // newTree.rotation.x += (Math.random()*(2*Math.PI/10));
-            newTree.rotation.x = ((Math.PI/2));
+            // 把树立起来 按照圆心的射线
+            let rollingGroundVector = this.ground.position.clone().normalize();
+            let treeVector = newTree.position.clone().normalize();
+            newTree.quaternion.setFromUnitVectors(treeVector, rollingGroundVector);
+            newTree.rotation.x += (Math.random()*(2*Math.PI/10))+-Math.PI/10;
+            // newTree.rotation.x = ((Math.PI/2));
 
             newTree.name = `tree${Math.random() * 10}`
             this.ground.add(newTree);
-
-
-
         }
 
         this.generateTree = () => {
