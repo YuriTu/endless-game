@@ -18,7 +18,7 @@ const hero = {
     jumpMin:.04 * 5,
     jumpMax:.005 * 5,
     jumpStep: .1,
-    validMoveJumpStep: .6 ,
+    validMoveJumpStep:.6,
     gravity: .005 * 2,
     moveLeftLane: -1,
     moveRightLane: 1
@@ -57,6 +57,8 @@ const block = {
         gap: 6.28 / 36,
         pathAngleValues:[1.52,1.57,1.62]
     },
+
+    maxTreesPool: 10,
 
 
 };

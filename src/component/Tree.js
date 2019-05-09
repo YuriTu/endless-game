@@ -8,10 +8,16 @@ export class Tree {
     constructor(scene){
         this.treesPool = [];
         this.treesInPathPool = [];
+        this.treesRemovePool = [];
         this.ground = scene.getObjectByName('ground')
         // 初始化常驻
         this.init = () => {
+            this.initStableTree();
+            this.initTreePool();
 
+        }
+
+        this.initStableTree = () => {
             for (let i = 0; i < block.scene.treeCount; i++){
                 this.setTrees(false, i* block.scene.gap, true);
                 this.setTrees(false, i* block.scene.gap, false);
@@ -19,7 +25,10 @@ export class Tree {
         }
 
         this.initTreePool = () => {
-
+            for (let i = 0; i < block.maxTreesPool; i++){
+                const tree = this.generateTree();
+                this.treesInPathPool.push(tree);
+            }
         }
 
         this.setTrees = (isInPath, row, isLeft = false) => {
@@ -124,16 +133,27 @@ export class Tree {
         }
 
         this.removeTree = () => {
+            this.treesRemovePool.forEach((item, index) => {
 
-        }
+            })
+        };
+
+
 
 
         this.init();
     }
 
 
-    add(container){
-
+    addTreeInPath(){
+        let options = [0, 1, 2];
+        let lane = Math.floor(Math.random() * 3);
+        this.setTrees(true, lane);
+        options.splice(lane, 1);
+        if (Math.random() > .5){
+            lane = Math.floor(Math.random() * 2);
+            this.setTrees(true, options[lane])
+        }
     }
 
 
@@ -146,6 +166,7 @@ export class Tree {
         //
         // })
         // blcok的消失
+        this.removeTree();
 
     }
 }

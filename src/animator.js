@@ -126,6 +126,7 @@ export class Animator {
                 this.timer.start();
                 //block judge
                 // score.update();
+                this.block.addTreeInPath()
                 //this.scorer.update();
 
                 this.hasCollided = false;
@@ -237,7 +238,7 @@ export class Animator {
         this.particles.update();
         this.rolGround && this.rolGround.update();
         this.block.update();
-        // tree.update()
+        this.timerUpdate();
         this.particles && this.particles.update();
 
     }
