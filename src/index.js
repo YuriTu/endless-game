@@ -24,7 +24,7 @@ class Main {
         this.initScene = () => {
             scene = new THREE.Scene();
             // scene.fog = new THREE.FogExp2(common.fog, 0.14 );
-            camera = new THREE.PerspectiveCamera(45, SCREEN_WIDTH / SCREEN_HEIGHT, .1, 1000);
+            camera = new THREE.PerspectiveCamera(60, SCREEN_WIDTH / SCREEN_HEIGHT, .1, 1000);
             camera.position.z = common.camz;
             camera.position.y = common.camy;
             renderer = new THREE.WebGLRenderer({alpha: true});

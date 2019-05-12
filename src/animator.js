@@ -12,7 +12,7 @@ export class Animator {
             this.initHero();
             this.initGroundSphere();
             this.initLight();
-            this.initBlock();
+            // this.initBlock();
             this.initExplosion();
             this.handleEvent();
         };
@@ -43,9 +43,7 @@ export class Animator {
                     this.hero.jumpValue = _.random(hero.jumpMin,hero.jumpMax);
                 }
                 this.hero.position.y += this.hero.jumpValue;
-                console.log(this.hero.position.x, this.hero.currentLane,2 * this.timer.getDelta())
-
-                this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.hero.currentLane * 20,2 * this.timer.getDelta());
+                this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.hero.currentLane,2 * this.timer.getDelta());
                 this.hero.jumpValue -= hero.gravity;
             };
 
@@ -237,7 +235,7 @@ export class Animator {
         this.hero && this.hero.update();
         this.particles.update();
         this.rolGround && this.rolGround.update();
-        this.block.update();
+        this.block && this.block.update();
         this.timerUpdate();
         this.particles && this.particles.update();
 

@@ -2,40 +2,41 @@ const common = {
     color: '',
     bg: 0xfffafa,
     fog: 0xf0fff0,
-    camz: 100,
-    camy: 10,
+    camz: 6.5,
+    camy: 2.5,
 
 };
 
-const hero = {
-    basePosZ:4.8,
-    basePosY:1.8 * 2,
-    radius: 10,
-    detail: 1,
-    rotXSpeed: -.1,
-    limitY:18,
-    jumpBaseY:1,
-    jumpMin:.04 * 5,
-    jumpMax:.005 * 5,
-    jumpStep: .1,
-    validMoveJumpStep:.6,
-    gravity: .005 * 2,
-    moveLeftLane: -1,
-    moveRightLane: 1
-
-};
 
 const ground = {
-    radius: 130,
+    radius: 26,
     widSeg: 40,
     heiSeg: 40,
-    posy: -130 + (-hero.radius) + 5,
-    posz: 0,
-    rotXSpeed: .01,
-    slopeHeight: 1,
+    posy: -24,
+    posz: 2,
+    rotXSpeed: .008,
+    slopeHeight: .07,
     lerpStart: 0.25,
     lerpEnd: 0.75
 };
+
+
+const hero = {
+    basePosZ:4.8,
+    basePosY:1.8,
+    radius: .2,
+    detail: 1,
+    limitY:18,
+    jumpBaseY:1,
+    jumpMin:.04,
+    jumpMax:.005,
+    jumpStep: .1,
+    validMoveJumpStep:.6,
+    gravity: .005,
+    moveLeftLane: -1,
+    moveRightLane: 1
+};
+hero.rotXSpeed = (ground.rotXSpeed * ground.radius / hero.radius) / 5;
 
 const block = {
     radius: 10,
