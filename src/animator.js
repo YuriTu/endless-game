@@ -12,7 +12,7 @@ export class Animator {
             this.initHero();
             this.initGroundSphere();
             this.initLight();
-            // this.initBlock();
+            this.initBlock();
             this.initExplosion();
             this.handleEvent();
         };
@@ -31,6 +31,8 @@ export class Animator {
             this.hero.currentLane = this.hero.middleLane;
             this.hero.leftLane = -1;
             this.hero.rightLane = 1;
+
+            this.hero.isDead = false;
 
             this.hero.position.x = this.hero.currentLane;
             this.hero.position.y = hero.basePosY;
@@ -126,8 +128,6 @@ export class Animator {
                 // score.update();
                 this.block.addTreeInPath()
                 //this.scorer.update();
-
-                this.hasCollided = false;
             }
         }
 

@@ -28,10 +28,10 @@ const hero = {
     detail: 1,
     limitY:18,
     jumpBaseY:1,
-    jumpMin:.04,
+    jumpMin:.045,
     jumpMax:.005,
     jumpStep: .1,
-    validMoveJumpStep:.6,
+    validMoveJumpStep:.06,
     gravity: .005,
     moveLeftLane: -1,
     moveRightLane: 1
@@ -39,25 +39,33 @@ const hero = {
 hero.rotXSpeed = (ground.rotXSpeed * ground.radius / hero.radius) / 5;
 
 const block = {
-    radius: 10,
-    height: 10,
+    radius: .5,
+    height: 1,
     heightSeg: 6,
     radSeg: 8,
     color: '#33ff33',
-    posy:12,
-    scalarStart: 5,
-    scalarEnd: 20,
-    trunkRad: 5,
-    trunkHeight: 25,
-    trunkPosY:5,
+    posy:.9,
+    scalarStart: .1,
+    scalarEnd: .25,
+    trunkRad: .1,
+    trunkHeight: .5,
+    trunkPosY:.25,
     trunkColor: '#886633',
     interval:.5,
 
     scene: {
         treeCount:36,
         gap: 6.28 / 36,
-        pathAngleValues:[1.52,1.57,1.62]
+        pathAngleValues:[1.52,1.57,1.62],
     },
+    groundOffset:.3,
+    groundLeftPhi:1.68+Math.random()*0.1,
+    groundRightPhi:1.46-Math.random()*0.1,
+
+    makeUpPosy:.05,
+    tightenScale:.06,
+
+    triggerLimitDistance: .6,
 
     maxTreesPool: 10,
 

@@ -9,10 +9,13 @@ export class Tree {
         this.treesPool = [];
         this.treesInPathPool = [];
         this.treesRemovePool = [];
-        this.ground = scene.getObjectByName('ground')
-        // 初始化常驻
+
+        this.ground = scene.getObjectByName('ground');
+        this.hero = scene.getObjectByName('hero');
+
+        // 初始化
         this.init = () => {
-            this.initStableTree();
+            // this.initStableTree();
             this.initTreePool();
 
         }
@@ -27,22 +30,26 @@ export class Tree {
         this.initTreePool = () => {
             for (let i = 0; i < block.maxTreesPool; i++){
                 const tree = this.generateTree();
-                this.treesInPathPool.push(tree);
+                this.treesPool.push(tree);
             }
         }
 
         this.setTrees = (isInPath, row, isLeft = false) => {
             let newTree = null;
             if (isInPath) {
+                // debugger
+                // console.log(this.treesPool)
                 if (this.treesPool.length === 0) return;
+
                 newTree = this.treesPool.pop();
                 newTree.visible = true;
-                console.log('success add tree');
+                // console.log('success add tree');
 
                 this.treesInPathPool.push(newTree);
                 // 根据球体坐标系，设置位置
                 // todo theta 当前sphere的旋转角度
-                sphericalHelper.set(ground.radius - 3, block.scene.pathAngleValues[row],this.ground.rotation.x );
+                // console.log(ground.radius - block.groundOffset, block.scene.pathAngleValues[row],-this.ground.rotation.x + 4 )
+                sphericalHelper.set(ground.radius - block.groundOffset, block.scene.pathAngleValues[row],-this.ground.rotation.x + 4 );
             } else {
                 newTree = this.generateTree();
                 // angle 天顶角固定   row 方位角 圆形36分
@@ -53,7 +60,7 @@ export class Tree {
                     angel = 1.46-Math.random()*0.1;
                 }
 
-                sphericalHelper.set(ground.radius - 3, angel,row);
+                sphericalHelper.set(ground.radius - block.groundOffset, angel,row);
             }
 
             newTree.position.setFromSpherical(sphericalHelper);
@@ -73,12 +80,12 @@ export class Tree {
             let treeMat = new THREE.MeshStandardMaterial({color: block.color, flatShading: THREE.FlatShading});
             let scalarMultiplier = _.random(block.scalarStart, block.scalarEnd);
 
-            // this.makeTreeUp(treeGeo.vertices, block.heiSeg, 0, scalarMultiplier);
-            // this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 1);
-            // this.makeTreeUp(treeGeo.vertices, block.heiSeg, 2, scalarMultiplier * 1.1, true);
-            // this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 3);
-            // this.makeTreeUp(treeGeo.vertices, block.heiSeg, 4, scalarMultiplier * 1.2);
-            // this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 5);
+            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 0, scalarMultiplier);
+            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 1);
+            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 2, scalarMultiplier * 1.1, true);
+            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 3);
+            this.makeTreeUp(treeGeo.vertices, block.heiSeg, 4, scalarMultiplier * 1.2);
+            this.makeTreeTighten(treeGeo.vertices, block.heightSeg, 5);
             // for mate
 
             // gen top
@@ -88,7 +95,7 @@ export class Tree {
             treeTop.position.y = block.posy;
             treeTop.rotation.y = (Math.random() * Math.PI);
 
-            let trunkGeo = new THREE.CylinderGeometry(block.trunkRad, block.trunkRad, block.height);
+            let trunkGeo = new THREE.CylinderGeometry(block.trunkRad, block.trunkRad, block.trunkHeight);
             let trunkMat = new THREE.MeshStandardMaterial({color: block.trunkColor, flatShading: THREE.FlatShading});
             let trunk = new THREE.Mesh(trunkGeo, trunkMat);
             trunk.position.y = block.trunkPosY;
@@ -107,18 +114,20 @@ export class Tree {
             for (let i = 0; i < heightSegment; i++) {
                 let vertexIndex = (currentRadiustSeg * heightSegment) + 1;
                 let vertex = vertices[vertexIndex + i].clone();
+                topPointVector.y = vertex.y;
                 let offset = vertex.sub(topPointVector);
 
                 if ( isOdd === (!!(i % 2))) {
                     offset.normalize().multiplyScalar(scalarMultiplier);
                     vertices[i + vertexIndex].add(offset);
-                    vertices[i + vertexIndex].y = vertices[i + vertexIndex + heightSegment].y + 0.5;
+                    vertices[i + vertexIndex].y = vertices[i + vertexIndex + heightSegment].y + block.makeUpPosy;
                 } else {
                     offset.normalize().multiplyScalar(scalarMultiplier / 6);
                     vertices[i + vertexIndex].add(offset);
                 }
             }
         };
+
 
         this.makeTreeTighten = (vertices, heightSegment, currentRadiusSeg) => {
             let topPointVector = vertices[0].clone();
@@ -127,19 +136,40 @@ export class Tree {
                 let vertexVector = vertices[i + vertexIndex].clone();
                 topPointVector.y = vertexVector.y;
                 let offset = vertexVector.sub(topPointVector);
-                offset.normalize().multiplyScalar(6);
+                offset.normalize().multiplyScalar(block.tightenScale);
                 vertices[i + vertexIndex].sub(offset);
             }
         }
 
-        this.removeTree = () => {
-            this.treesRemovePool.forEach((item, index) => {
+
+
+        this.setTreesInPathToRemove = () => {
+            let treePos = new THREE.Vector3();
+            this.treesInPathPool.forEach(item => {
+                let tree = item;
+                treePos.setFromMatrixPosition(tree.matrixWorld);
+                if (treePos.z > 6 && tree.visible) {
+                    //todo 直接处理
+                    console.log('will remove tree')
+                    this.treesRemovePool.push(tree);
+                } else if (treePos.distanceTo(this.hero.position) < block.triggerLimitDistance) {
+                    console.log('boom!!!');
+                    this.hero.isDead = true;
+                }
 
             })
-        };
+        }
 
-
-
+        this.removeTree = () => {
+            this.treesRemovePool.forEach(item => {
+                console.log('remove tree',item)
+                let thisTree = item;
+                let from = this.treesInPathPool.indexOf(thisTree);
+                this.treesInPathPool.splice(from,1);
+                this.treesPool.push(thisTree);
+                thisTree.visible = false;
+            })
+        }
 
         this.init();
     }
@@ -159,13 +189,7 @@ export class Tree {
 
 
     update(){
-        let pos = new THREE.Vector3();
-        let tree;
-        // 路径中
-        // this.treesInPathPool.forEach((item, index) => {
-        //
-        // })
-        // blcok的消失
+        this.setTreesInPathToRemove();
         this.removeTree();
 
     }
