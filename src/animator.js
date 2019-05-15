@@ -13,7 +13,6 @@ export class Animator {
             this.initGroundSphere();
             this.initLight();
             this.initBlock();
-            this.initExplosion();
             this.handleEvent();
         };
         this.initHero = () => {
@@ -134,42 +133,7 @@ export class Animator {
 
 
 
-        //todo 这里的爆炸直接消失 加个过渡
-        // todo 逻辑太多 抽个class
-        this.initExplosion = () => {
-            let particleGeo = new THREE.Geometry();
-            let particleMat = new THREE.PointsMaterial({
-                color: particle.color,
-                size: particle.size
-            });
-            this.explosionScale = particle.scale;
-            // 虽然可以每次碰撞再生成，不过粒子爆炸比较丑，后面改掉吧
-            for (let i = 0; i < particle.count; i++){
-                particleGeo.vertices.push(new THREE.Vector3(
-                    _.random(-particle.vectorLimit, particle.vectorLimit)
-                ));
-            }
-            this.particles = new THREE.Points(particleGeo, particleMat);
-            this.particles.visible = false;
 
-            this.particles.update = () => {
-                if (!this.particles.visible) return;
-                this.particles.geometry.vertices.forEach(i => i.multiplyScalar(this.explosionScale));
-                if (this.explosionScale > particle.scaleMaxLimit){
-                    this.explosionScale -= particle.scaleStep;
-                } else {
-                    this.particles.visible = false;
-                }
-                this.particles.geometry.verticesNeedUpdate = true;
-            };
-            this.particles.explode = () => {
-                this.particles.position.set(this.hero.position.x, particle.start.y, particle.start.z);
-                this.explosionScale = particle.scaleEnd;
-                this.particles.visible = true;
-            }
-
-            this.scene.add(this.particles);
-        }
 
         this.handleEvent = () => {
             this.handleKeyDown();
@@ -233,11 +197,9 @@ export class Animator {
 
     update() {
         this.hero && this.hero.update();
-        this.particles.update();
         this.rolGround && this.rolGround.update();
         this.block && this.block.update();
         this.timerUpdate();
-        this.particles && this.particles.update();
 
     }
 }

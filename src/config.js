@@ -74,16 +74,16 @@ const block = {
 
 const particle = {
     count:20,
-    color: '#fffafa',
-    size: 0.2,
+    color: '#000000',
+    size: .2,
     scale:1.06,
     scaleMaxLimit: 1.005,
     scaleStep:.001,
     start:{
-        y:20,
-        z:48,
+        y:2,
+        z:4.8,
     },
-    vectorLimit:2,
+    vectorLimit:.2,
     scaleEnd:1.07
 
 }

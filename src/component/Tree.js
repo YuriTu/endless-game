@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import {hero, ground, block, particle} from '../config';
 import _ from 'christina';
+import {Explosion} from "./Explosion";
 
 const sphericalHelper = new THREE.Spherical();
-
+// todo 计算buffer化
 export class Tree {
     constructor(scene){
         this.treesPool = [];
@@ -13,9 +14,11 @@ export class Tree {
         this.ground = scene.getObjectByName('ground');
         this.hero = scene.getObjectByName('hero');
 
+        this.exploser = new Explosion(scene);
+
         // 初始化
         this.init = () => {
-            // this.initStableTree();
+            this.initStableTree();
             this.initTreePool();
 
         }
@@ -38,7 +41,7 @@ export class Tree {
             let newTree = null;
             if (isInPath) {
                 // debugger
-                // console.log(this.treesPool)
+                // console.log(this.treesPool.length)
                 if (this.treesPool.length === 0) return;
 
                 newTree = this.treesPool.pop();
@@ -49,6 +52,7 @@ export class Tree {
                 // 根据球体坐标系，设置位置
                 // todo theta 当前sphere的旋转角度
                 // console.log(ground.radius - block.groundOffset, block.scene.pathAngleValues[row],-this.ground.rotation.x + 4 )
+                // console.log(-this.ground.rotation.x + 4);
                 sphericalHelper.set(ground.radius - block.groundOffset, block.scene.pathAngleValues[row],-this.ground.rotation.x + 4 );
             } else {
                 newTree = this.generateTree();
@@ -147,28 +151,37 @@ export class Tree {
             let treePos = new THREE.Vector3();
             this.treesInPathPool.forEach(item => {
                 let tree = item;
+
                 treePos.setFromMatrixPosition(tree.matrixWorld);
+                // console.log(treePos.z,tree.visible)
                 if (treePos.z > 6 && tree.visible) {
                     //todo 直接处理
-                    console.log('will remove tree')
+                    // console.log('will remove tree')
                     this.treesRemovePool.push(tree);
                 } else if (treePos.distanceTo(this.hero.position) < block.triggerLimitDistance) {
-                    console.log('boom!!!');
-                    this.hero.isDead = true;
-                }
 
+                    this.hero.isDead = true;
+                    // 不幂等
+                    // if (!this.exploser.mesh.visible){
+                        console.log('boom!!!');
+                        this.exploser.explode(this.hero);
+                    // }
+
+                }
             })
         }
 
         this.removeTree = () => {
+            // console.log(this.treesRemovePool.length);
             this.treesRemovePool.forEach(item => {
-                console.log('remove tree',item)
+                // console.log('remove tree',item)
                 let thisTree = item;
                 let from = this.treesInPathPool.indexOf(thisTree);
                 this.treesInPathPool.splice(from,1);
                 this.treesPool.push(thisTree);
                 thisTree.visible = false;
-            })
+            });
+            this.treesRemovePool = [];
         }
 
         this.init();
@@ -189,8 +202,10 @@ export class Tree {
 
 
     update(){
+
         this.setTreesInPathToRemove();
         this.removeTree();
+        this.exploser.update();
 
     }
 }
