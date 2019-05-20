@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
 import {common} from './config';
 import {Animator} from './animator';
+import './index.less';
 
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
@@ -12,13 +13,14 @@ let scene;
 let controls;
 
 class Main {
-    constructor() {
+    constructor(props) {
         this.init = () => {
             this.initScene();
             this.initDevTool();
             this.actor = new Animator({
                 scene,
-                toastEnd:this.toashEnd
+                toastEnd:props.renderEnd,
+                setScore:props.setScore
             });
         };
 
@@ -79,56 +81,60 @@ class Main {
 }
 
 class Controller {
-    constructor(props) {
+    constructor() {
         // start -1 gameing 0 end 1
         this.state = {
-            state: 1,
+            state: -1,
             score:0
 
         }
         this.container = document.querySelector('.container');
+
+        this.renderEnd = () => {
+
+            this.state.state = 1;
+            this.toggleShadow();
+            this.render();
+        }
+
+        this.setScore = (num) => {
+            this.state.score = num;
+        }
+
         this.main = new Main({
             renderEnd: this.renderEnd,
             setScore: this.setScore
         });
 
-
-        this.renderEnd = () => {
-            this.state.state = 1;
-        }
-
-        this.setScore = (num) => {
-            this.state.score = num;
-            this.render();
-        }
-
-
         this.handle = () => {
+            // todo setter
             document.querySelector('.start').addEventListener('click',(e) => {
                 this.toggleShadow();
-                this.state.state = e.target.value;
+                this.state.state = +e.target.value;
+                this.render();
                 this.main.animate();
             })
         }
     }
     toggleShadow(){
         // slide down css
+        document.querySelector('.shadow').classList.toggle('hide');
     }
     render(){
-        this.container.innerHTML = `
-            <div class=${`game-start ${this.state.state === -1 || 'hide' }`}>
-                <div>title</div>
-                <div class="start">start!</div>
-            </div>
-            <div class=${`game-end ${this.state.state === 1 || 'hide'}`}>
-                <div class="score">${this.state.score}</div>
-                <div class="re-start start">restart!</div>
-            </div>
-        `;
+        this.container.innerHTML = this.state.state === -1
+            ? `<div class="game-start">
+                <h2>Hearts of Iron</h2>
+                <button class="start" value="0">start!</button>
+            </div> `
+            : this.state.state === 1 ? `<div class=${`game-end ${this.state.state === 1 || 'hide'}`}>
+                <h3 class="score">Your socre is ${this.state.score}</h3>
+                <button class="re-start start" value="0">restart!</button>
+            </div> ` : '';
     }
     start(){
         this.render();
         this.handle();
+        // this.main.render();
     }
 
 }

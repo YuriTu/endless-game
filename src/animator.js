@@ -139,10 +139,12 @@ export class Animator {
             //todo 需要做一些延迟加缓动，让爆炸效果跑完
             // todo 加个 tobecontinued似乎也不错
             //  延迟 -》 缓动
-            setTimeout(() => {
+            if (this.timeoutid) return;
+            this.timeoutid = setTimeout(() => {
                 cancelAnimationFrame(window.rafID);
+                props.setScore(this.scorer.score);
                 props.toastEnd();
-            },2000)
+            },500)
         }
 
         this.handleEvent = () => {
