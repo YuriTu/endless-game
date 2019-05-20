@@ -67,7 +67,7 @@ const block = {
 
     triggerLimitDistance: .6,
 
-    maxTreesPool: 10,
+    maxTreesPool: 8,
 
 
 };

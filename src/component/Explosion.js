@@ -40,7 +40,7 @@ export class Explosion {
             )
         })
         this.particles.visible = true;
-        console.log(hero.position,this.particles.position)
+        // console.log(hero.position,this.particles.position)
     }
 
     update(){

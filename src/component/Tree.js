@@ -20,7 +20,10 @@ export class Tree {
         this.init = () => {
             this.initStableTree();
             this.initTreePool();
-
+        }
+        this.reset = () => {
+            // this.treesInPathPool = [];
+            // this.ground.children = [];
         }
 
         this.initStableTree = () => {
@@ -159,11 +162,11 @@ export class Tree {
                     // console.log('will remove tree')
                     this.treesRemovePool.push(tree);
                 } else if (treePos.distanceTo(this.hero.position) < block.triggerLimitDistance) {
-
+                    console.log(this.hero.isDead);
                     this.hero.isDead = true;
                     // 不幂等
                     // if (!this.exploser.mesh.visible){
-                        console.log('boom!!!');
+                    //     console.log('boom!!!');
                         this.exploser.explode(this.hero);
                     // }
 

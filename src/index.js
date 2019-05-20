@@ -58,9 +58,6 @@ class Main {
             });
         };
 
-        this.toastEnd = () => {
-
-        }
 
         this.render = () => {
 
@@ -72,6 +69,10 @@ class Main {
         this.init();
     }
 
+    reset(){
+        this.actor.reset();
+    }
+
     animate() {
         window.rafID = window.requestAnimationFrame(this.animate.bind(this));
         controls && controls.update();
@@ -80,6 +81,7 @@ class Main {
 
 }
 
+//todo 这里应该考虑抽成一个小框架的
 class Controller {
     constructor() {
         // start -1 gameing 0 end 1
@@ -108,13 +110,18 @@ class Controller {
 
         this.handle = () => {
             // todo setter
-            document.querySelector('.start').addEventListener('click',(e) => {
-                this.toggleShadow();
-                this.state.state = +e.target.value;
-                this.render();
-                this.main.animate();
+            document.addEventListener('click',(e) => {
+                if (e.target.classList.contains('start')) {
+                    this.toggleShadow();
+                    this.state.state = +e.target.value;
+                    this.render();
+                    this.main.reset();
+                    this.main.animate();
+                }
+
             })
         }
+
     }
     toggleShadow(){
         // slide down css

@@ -9,12 +9,20 @@ export class Animator {
         this.timer = new THREE.Clock();
         this.scorer = new Scorer();
         this.init = () => {
+            this.reset();
             this.initHero();
             this.initGroundSphere();
             this.initLight();
             this.initBlock();
             this.handleEvent();
         };
+
+        this.reset = () => {
+            this.scorer.score = 0;
+            this.hero && this.hero.reset();
+            this.block && this.block.reset();
+        }
+
         this.initHero = () => {
             let geo = new THREE.DodecahedronGeometry(hero.radius, hero.detail);
             let mat = new THREE.MeshStandardMaterial({color: 0xe5f2f2, flatShading: THREE.FlatShading});
@@ -47,6 +55,11 @@ export class Animator {
                 this.hero.position.x = THREE.Math.lerp(this.hero.position.x, this.hero.currentLane,2 * this.timer.getDelta());
                 this.hero.jumpValue -= hero.gravity;
             };
+
+            this.hero.reset = () => {
+                this.hero.isDead = false;
+                this.hero.currentLane = this.hero.middleLane;
+            }
 
             this.hero.name = 'hero';
             this.scene.add(this.hero);
@@ -139,11 +152,13 @@ export class Animator {
             //todo 需要做一些延迟加缓动，让爆炸效果跑完
             // todo 加个 tobecontinued似乎也不错
             //  延迟 -》 缓动
-            if (this.timeoutid) return;
-            this.timeoutid = setTimeout(() => {
+            if (this.deaddelay) return;
+            this.deaddelay = true;
+            setTimeout(() => {
                 cancelAnimationFrame(window.rafID);
                 props.setScore(this.scorer.score);
                 props.toastEnd();
+                this.deaddelay = false;
             },500)
         }
 
