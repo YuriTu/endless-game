@@ -17,7 +17,8 @@ class Main {
             this.initScene();
             this.initDevTool();
             this.actor = new Animator({
-                scene
+                scene,
+                toastEnd:this.toashEnd
             });
         };
 
@@ -55,8 +56,14 @@ class Main {
             });
         };
 
+        this.toastEnd = () => {
+
+        }
+
         this.render = () => {
+
             this.actor.update();
+
             renderer.render(scene, camera);
         };
 
@@ -64,7 +71,7 @@ class Main {
     }
 
     animate() {
-        window.requestAnimationFrame(this.animate.bind(this));
+        window.rafID = window.requestAnimationFrame(this.animate.bind(this));
         controls && controls.update();
         this.render();
     }

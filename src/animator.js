@@ -126,9 +126,26 @@ export class Animator {
                 //block judge
                 // score.update();
                 this.block.addTreeInPath()
-                //this.scorer.update();
+                if (this.hero.isDead){
+                    this.gameOverCatcher();
+                } else {
+                    this.scorer.update();
+                }
+
             }
         }
+
+        this.gameOverCatcher = () => {
+            //todo 需要做一些延迟加缓动，让爆炸效果跑完
+            // todo 加个 tobecontinued似乎也不错
+            //  延迟 -》 缓动
+            setTimeout(() => {
+                cancelAnimationFrame(window.rafID);
+                props.toastEnd();
+            },5000)
+        }
+
+
 
 
 
@@ -200,16 +217,26 @@ export class Animator {
         this.rolGround && this.rolGround.update();
         this.block && this.block.update();
         this.timerUpdate();
-
     }
+
 }
 
 
 class Scorer {
     constructor(){
+        this.score = 0;
+
+        const st = document.createElement('div');
+        st.style.position = 'absolute';
+        st.style.top = '20px';
+        st.style.left = '10px';
+        document.body.appendChild(st);
+
+        this.st = st;
 
     }
     update(){
-
+        this.score += 2 * block.interval;
+        this.st.innerHTML = this.score;
     }
 }
