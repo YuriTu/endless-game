@@ -142,15 +142,8 @@ export class Animator {
             setTimeout(() => {
                 cancelAnimationFrame(window.rafID);
                 props.toastEnd();
-            },5000)
+            },2000)
         }
-
-
-
-
-
-
-
 
         this.handleEvent = () => {
             this.handleKeyDown();

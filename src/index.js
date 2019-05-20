@@ -78,6 +78,62 @@ class Main {
 
 }
 
-let main = new Main();
-main.animate();
+class Controller {
+    constructor(props) {
+        // start -1 gameing 0 end 1
+        this.state = {
+            state: 1,
+            score:0
+
+        }
+        this.container = document.querySelector('.container');
+        this.main = new Main({
+            renderEnd: this.renderEnd,
+            setScore: this.setScore
+        });
+
+
+        this.renderEnd = () => {
+            this.state.state = 1;
+        }
+
+        this.setScore = (num) => {
+            this.state.score = num;
+            this.render();
+        }
+
+
+        this.handle = () => {
+            document.querySelector('.start').addEventListener('click',(e) => {
+                this.toggleShadow();
+                this.state.state = e.target.value;
+                this.main.animate();
+            })
+        }
+    }
+    toggleShadow(){
+        // slide down css
+    }
+    render(){
+        this.container.innerHTML = `
+            <div class=${`game-start ${this.state.state === -1 || 'hide' }`}>
+                <div>title</div>
+                <div class="start">start!</div>
+            </div>
+            <div class=${`game-end ${this.state.state === 1 || 'hide'}`}>
+                <div class="score">${this.state.score}</div>
+                <div class="re-start start">restart!</div>
+            </div>
+        `;
+    }
+    start(){
+        this.render();
+        this.handle();
+    }
+
+}
+let controller = new Controller();
+controller.start();
+
+
 
