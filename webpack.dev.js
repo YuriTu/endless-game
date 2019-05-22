@@ -18,7 +18,7 @@ let devConfig = {
     devServer: { // 在webpack这一层来解决跨域
         // contentBase: __dirname,
         port: 8080,
-        allowedHosts: ['e.im.baidu.com'],
+        allowedHosts: '*',
         hot: true,
         // hotOnly: true,
         // disableHostCheck: true,
