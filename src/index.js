@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
 import {common} from './config';
 import {Animator} from './animator';
+import _ from 'christina';
 import './index.less';
+
 
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
@@ -16,7 +18,8 @@ class Main {
     constructor(props) {
         this.init = () => {
             this.initScene();
-            this.initDevTool();
+            (__ENV__ === 'DEV') && this.initDevTool();
+            this.handleResize();
             this.actor = new Animator({
                 scene,
                 toastEnd:props.renderEnd,
@@ -57,6 +60,15 @@ class Main {
                 this.render();
             });
         };
+
+        this.handleResize = () => {
+            let fn = _.debounce(() => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth , window.innerHeight);
+            },500)
+            window.addEventListener('resize',fn,false);
+        }
 
 
         this.render = () => {

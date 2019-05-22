@@ -23,7 +23,7 @@ const ground = {
 
 const hero = {
     basePosZ:4.8,
-    basePosY:1.8,
+    basePosY:1.85,
     radius: .2,
     detail: 1,
     limitY:18,
@@ -67,7 +67,7 @@ const block = {
 
     triggerLimitDistance: .6,
 
-    maxTreesPool: 8,
+    maxTreesPool: 6,
 
 
 };

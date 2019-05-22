@@ -164,7 +164,6 @@ export class Animator {
 
         this.handleEvent = () => {
             this.handleKeyDown();
-            this.handleResize();
         }
 
         this.handleKeyDown = () => {
@@ -212,11 +211,6 @@ export class Animator {
             })
 
         }
-
-        this.handleResize = () => {
-
-        }
-
 
 
         this.init();
