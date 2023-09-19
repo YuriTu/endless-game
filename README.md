@@ -1,8 +1,8 @@
 # Hearts of iron
 
-![iron](http://tuqiang.website/images/iron.png)
+![iron](./iron.png)
 
-[livedemo](http://tuqiang.website/game/hearts/main.html)
+[livedemo](https://endless-game-za65.vercel.app/)
 
 跑酷小游戏，通过方向键控制小球运动来躲避障碍。
 
